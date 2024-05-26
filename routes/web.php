@@ -11,6 +11,8 @@ use App\Http\Controllers\admin\ProductImageController;
 use App\Http\Controllers\admin\ProductSubCategoryController;
 use App\Http\Controllers\admin\SubCategoryController;
 use App\Http\Controllers\admin\TempImagesController;
+use App\Http\Controllers\FrontController;
+use App\Http\Controllers\ShopContrroller;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
@@ -25,9 +27,12 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+Route::get('/',[FrontController::class,'index'])->name('front.home');
+Route::get('/shop',[ShopContrroller::class,'index'])->name('front.shop');
 
 
 Route::group(['prefix' => 'admin'], function() {

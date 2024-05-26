@@ -64,10 +64,18 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="status">Tampilkan di Home</label>
+                                <select name="showHome" id="showHome" class="form-control">
+                                    <option {{ ($category->showHome == 'Yes') ? 'selected' : '' }} value="Yes">Yes</option>
+                                    <option {{ ($category->showHome == 'No') ? 'selected' : '' }} value="No">No</option>
+                                </select>
+                            </div>
+                        </div>
                 </div>
             </div>
-            <div class="pb-5 pt-3">
+            <div class="pb-5 pt-3 me-3">
                 <button type="submit" class="btn btn-primary">Update</button>
                 <a href="{{ route('categories.index') }}" class="btn btn-outline-dark ml-3">Cancel</a>
             </div>
