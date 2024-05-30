@@ -53,9 +53,10 @@
                         </thead>
                         <tbody>
                             @if ($subCategories->isNotEmpty())
-                            @foreach ($subCategories as $subCategory)
+                            
+                            @foreach ($subCategories as $index=> $subCategory)
                             <tr>
-                                <td>{{ $subCategory->id }}</td>
+                                <td>{{ $index + 1 + ($page * 10) }}</td>
                                 <td>{{ $subCategory->name }}</td>
                                 <td>{{ $subCategory->categoryName }}</td>
                                 <td>{{ $subCategory->slug }}</td>
