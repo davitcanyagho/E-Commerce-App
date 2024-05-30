@@ -41,10 +41,10 @@
                         <thead>
                             <tr>
                                 <th>Item</th>
-                                <th>Price</th>
-                                <th>Quantity</th>
-                                <th>Total</th>
-                                <th>Remove</th>
+                                <th>Harga</th>
+                                <th>Kuantitas</th>
+                                <th>Jumlah</th>
+                                <th>Hapus</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -81,7 +81,7 @@
                                     Rp.{{ NumberFormat($item->price*$item->qty) }}
                                 </td>
                                 <td>
-                                    <button class="btn btn-sm btn-danger" onclick="deleteItem('{{ $item->rowId }}')"><i class="fa fa-times"></i></button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteCart('{{ $item->rowId }}')"><i class="fa fa-times"></i></button>
                                 </td>
                             </tr>
                             @endforeach
@@ -93,7 +93,7 @@
             <div class="col-md-4">
                 <div class="card cart-summery">
                     <div class="sub-title">
-                        <h2 class="bg-white">Cart Summery</h3>
+                        <h2 class="bg-white">Keranjang Nota</h3>
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between pb-2">
@@ -109,7 +109,7 @@
                             <div>Rp.{{ Cart::subtotal() }}</div>
                         </div>
                         <div class="pt-5">
-                            <a href="login.php" class="btn-dark btn btn-block w-100">Proceed to Checkout</a>
+                            <a href="{{ route('front.checkout') }}" class="btn-dark btn btn-block w-100">Proses ke checkout</a>
                         </div>
                     </div>
                 </div>
@@ -122,7 +122,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body d-flex justify-content-center align-item-center">
-                        <h4>Your Cart is empty!</h4>
+                        <h4>Keranjang anda kosong!</h4>
                     </div>
                 </div>
             </div>
