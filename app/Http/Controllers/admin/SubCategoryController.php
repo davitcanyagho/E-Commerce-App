@@ -30,7 +30,10 @@ class SubCategoryController extends Controller
 
         $subCategories = $subCategories->paginate(10);
 
-        return view('admin.sub_category.list', compact('subCategories'));
+        $page = Request()->input('page');
+        $page = $page ?  ($page-1) : 0;
+
+        return view('admin.sub_category.list', compact('subCategories', 'page'));
     }
 
     public function create()
