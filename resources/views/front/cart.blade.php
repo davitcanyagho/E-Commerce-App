@@ -91,24 +91,16 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card cart-summery">
-                    <div class="sub-title">
-                        <h2 class="bg-white">Keranjang Nota</h3>
-                    </div>
+                <div class="card cart-summery">                   
                     <div class="card-body">
+                        <div class="sub-title">
+                            <h2 class="bg-white">Keranjang Nota</h3>
+                        </div>
                         <div class="d-flex justify-content-between pb-2">
                             <div>Subtotal</div>
                             <div>Rp.{{ Cart::subtotal() }}</div>
                         </div>
-                        <div class="d-flex justify-content-between pb-2">
-                            <div>Ongkir</div>
-                            <div>0</div>
-                        </div>
-                        <div class="d-flex justify-content-between summery-end">
-                            <div>Total</div>
-                            <div>Rp.{{ Cart::subtotal() }}</div>
-                        </div>
-                        <div class="pt-5">
+                        <div class="pt-2">
                             <a href="{{ route('front.checkout') }}" class="btn-dark btn btn-block w-100">Proses ke checkout</a>
                         </div>
                     </div>
