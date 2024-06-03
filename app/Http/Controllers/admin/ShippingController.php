@@ -4,52 +4,54 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Country;
-use App\Models\Shipping;
 use App\Models\ShippingCharge;
 use Illuminate\Http\Request;
-use illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Validator;
 
 class ShippingController extends Controller
 {
-    public function create()
-    {
+    public function create() {
         $countries = Country::get();
         $data['countries'] = $countries;
 
-        $shippingCharges = ShippingCharge::select('shipping_charges.*', 'countries.name')
-            ->leftJoin('countries', 'countries.id', 'shipping_charges.country_id')->get();
-
+        $shippingCharges = ShippingCharge::select('shipping_charges.*','countries.name')
+                            ->leftJoin('countries','countries.id','shipping_charges.country_id')->get();
+        
         $data['shippingCharges'] = $shippingCharges;
-
-        return view('admin.shipping.create', $data);
+        return view('admin.shipping.create',$data);
     }
 
-    public function store(Request $request)
-    {
-
-
-
-        $validator = Validator::make($request->all(), [
+    public function store(Request $request) {
+        
+        $validator = Validator::make($request->all(),[
             'country' => 'required',
-            'amount' => 'required|numeric'
+            'amount' => 'required|numeric',
         ]);
 
-        if ($validator->passees()) {
+        if ($validator->passes()) {
 
-            $count = ShippingCharge::where('country_id', $request->country)->count();
+            $count = ShippingCharge::where('country_id',$request->country)->count();
+
             if ($count > 0) {
-                session()->flash('error', 'Shipping already added');
+
+                session()->flash('error','Ongkir sudah ada');
+
                 return response()->json([
-                    'status' => true,
+                    'status' => true
                 ]);
             }
 
             $shipping = new ShippingCharge();
             $shipping->country_id = $request->country;
-            $shipping->amount = $request->country;
+            $shipping->amount = $request->amount;
             $shipping->save();
 
-            session()->flash('success', 'Shipping added successfully');
+            session()->flash('success','Ongkir berhasil ditambahkan');
+
+            return response()->json([
+                'status' => true,
+            ]);
+
         } else {
             return response()->json([
                 'status' => false,
@@ -58,8 +60,7 @@ class ShippingController extends Controller
         }
     }
 
-    public function edit($id)
-    {
+    public function edit($id) {
 
         $shippingCharge = ShippingCharge::find($id);
 
@@ -67,34 +68,41 @@ class ShippingController extends Controller
         $data['countries'] = $countries;
         $data['shippingCharge'] = $shippingCharge;
 
-        return view('admin.shipping.edit' . $data);
+        
+
+        return view('admin.shipping.edit', $data);
     }
 
-    public function update($id, Request $request)
-    {
+    public function update($id, Request $request) {
+
         $shipping = ShippingCharge::find($id);
         
-        $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(),[
             'country' => 'required',
-            'amount' => 'required|numeric'
+            'amount' => 'required|numeric',
         ]);
 
-        if ($validator->passees()) {
+        if ($validator->passes()) {
 
             if ($shipping == null) {
-                session()->flash('error', 'Shipping not found');
-
+            
+                session()->flash('error','Ongkir btidak ditemukan');
+    
                 return response()->json([
                     'status' => true,
                 ]);
             }
 
-            $shipping   = ShippingCharge::find($id);
             $shipping->country_id = $request->country;
-            $shipping->amount = $request->country;
+            $shipping->amount = $request->amount;
             $shipping->save();
 
-            session()->flash('success', 'Shipping update successfully');
+            session()->flash('success','Ongkir berhasil di Update');
+
+            return response()->json([
+                'status' => true,
+            ]);
+
         } else {
             return response()->json([
                 'status' => false,
@@ -103,12 +111,13 @@ class ShippingController extends Controller
         }
     }
 
-    public function destroy($id)
-    {
+    public function destroy($id) {
+
         $shippingCharge = ShippingCharge::find($id);
 
         if ($shippingCharge == null) {
-            session()->flash('error', 'Shipping not found');
+            
+            session()->flash('error','Ongkir btidak ditemukan');
 
             return response()->json([
                 'status' => true,
@@ -117,10 +126,11 @@ class ShippingController extends Controller
 
         $shippingCharge->delete();
 
-        session()->flash('success', 'Shipping deketed successfully');
+        session()->flash('success','Ongkir berhasil di Hapus');
 
         return response()->json([
             'status' => true,
         ]);
+
     }
 }

@@ -7,6 +7,7 @@ use App\Models\CustomerAddress;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Models\ShippingCharge;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +15,8 @@ use Illuminate\Support\Facades\Validator;
 
 class CartController extends Controller
 {
-    public function addToCart(Request $request) {
+    public function addToCart(Request $request)
+    {
         $product = Product::with('product_images')->find($request->id);
 
         if ($product == null) {
@@ -41,41 +43,38 @@ class CartController extends Controller
             }
 
             if ($productAlreadyExist == false) {
-                Cart::add($product->id, $product->title, 1, $product->price, ['productImage' => (!empty
-                ($product->product_images)) ? $product->product_images->first() : '']);
+                Cart::add($product->id, $product->title, 1, $product->price, ['productImage' => (!empty($product->product_images)) ? $product->product_images->first() : '']);
 
                 $status = true;
-                $message = '<strong>'.$product->title.'</strong> ditambah di keranjang.';
-                session()->flash('success',$message);
-            
+                $message = '<strong>' . $product->title . '</strong> ditambah di keranjang.';
+                session()->flash('success', $message);
             } else {
                 $status = false;
-                $message = $product->title." Sudah ditambah di keranjang";
+                $message = $product->title . " Sudah ditambah di keranjang";
             }
-
-
         } else {
             Cart::add($product->id, $product->title, 1, $product->price, ['productImage' => (!empty($product->product_images)) ? $product->product_images->first() : '']);
             $status = true;
-            $message = '<strong>'.$product->title.'</strong> ditambah di keranjang.';
-            session()->flash('success',$message);
+            $message = '<strong>' . $product->title . '</strong> ditambah di keranjang.';
+            session()->flash('success', $message);
         }
 
         return response()->json([
             'status' => $status,
             'message' => $message
         ]);
-
     }
 
-    public function cart() {
+    public function cart()
+    {
         $cartContent = Cart::content();
         //dd($cartContent);
         $data['cartContent'] = $cartContent;
         return view('front.cart', $data);
     }
 
-    public function updateCart(Request $request) {
+    public function updateCart(Request $request)
+    {
         $rowId = $request->rowId;
         $qty = $request->qty;
 
@@ -87,19 +86,19 @@ class CartController extends Controller
         if ($product->track_qty == 'Yes') {
             if ($qty <= $product->qty) {
                 Cart::update($rowId, $qty);
-                $message = 'Keranjang sukses di Update';  
+                $message = 'Keranjang sukses di Update';
                 $status = true;
-                session()->flash('success',$message);
+                session()->flash('success', $message);
             } else {
-                $message = 'Requested qty('.$qty.') not available in stock.';
+                $message = 'Requested qty(' . $qty . ') not available in stock.';
                 $status = false;
-                session()->flash('error',$message);
+                session()->flash('error', $message);
             }
         } else {
             Cart::update($rowId, $qty);
-            $message = 'Keranjang sukses di Update';  
+            $message = 'Keranjang sukses di Update';
             $status = true;
-            session()->flash('success',$message);
+            session()->flash('success', $message);
         }
 
         session()->flash('success', $message);
@@ -109,24 +108,25 @@ class CartController extends Controller
         ]);
     }
 
-    public function deleteItem(Request $request) {
-        
+    public function deleteItem(Request $request)
+    {
+
         $itemInfo = Cart::get($request->rowId);
 
-        if($itemInfo == null) {
+        if ($itemInfo == null) {
             $errorMessage = 'Tidak ada item di keranjang';
-            session()->flash('error',$errorMessage);
-            
+            session()->flash('error', $errorMessage);
+
             return response()->json([
                 'status' => false,
                 'message' => $errorMessage
             ]);
         }
         Cart::remove($request->rowId);
-        
+
         $message = 'Item berhasil dihapus dari keranjang.';
-        
-        session()->flash('success',$message);
+
+        session()->flash('success', $message);
 
         return response()->json([
             'status' => true,
@@ -134,7 +134,8 @@ class CartController extends Controller
         ]);
     }
 
-    public function checkout() {
+    public function checkout()
+    {
 
         //-- if cart empty redirect to cart page
         if (Cart::count() == 0) {
@@ -143,29 +144,51 @@ class CartController extends Controller
 
         //-- if user is not logged in then redirect to login page
         if (Auth::check() == false) {
-            
+
             if (!session()->has('url.intended')) {
                 session(['url.intended' => url()->current()]);
             }
-            
+
             return redirect()->route('account.login');
         }
-        
-        $customerAddress = CustomerAddress::where('user_id',Auth::user()->id)->first();
 
+        $customerAddress = CustomerAddress::where('user_id', Auth::user()->id)->first();
 
 
         session()->forget('url.intended');
 
-        $countries = Country::orderBy('name','ASC')->get();
+        $countries = Country::orderBy('name', 'ASC')->get();
 
-        return view('front.checkout',[
+        // Calculating shipping
+        if ($customerAddress != '') {
+            $userCountry = $customerAddress->country_id;
+        $shippingInfo = ShippingCharge::where('country_id', $userCountry)->first();
+
+        $totalQty = 0;
+        $totalShippingCharge = 0;
+        $grandTotal = 0;
+        foreach (Cart::content() as $item) {
+            $totalQty += $item->qty;
+        }
+
+        $totalShippingCharge = $totalQty * $shippingInfo->amount;
+        $grandTotal = Cart::subtotal(2, '.', '') + $totalShippingCharge;
+        
+        } else {
+            $grandTotal = Cart::subtotal(2, '.', '');
+            $totalShippingCharge = 0;
+        }
+
+        return view('front.checkout', [
             'countries' => $countries,
-            'customerAddress'=> $customerAddress
+            'customerAddress' => $customerAddress,
+            'totalShippingCharge' => $totalShippingCharge,
+            'grandTotal' => $grandTotal
         ]);
     }
 
-    public function processCheckout(Request $request) {
+    public function processCheckout(Request $request)
+    {
 
         // step - 1 Apply Validation
 
@@ -216,9 +239,27 @@ class CartController extends Controller
 
             $shipping = 0;
             $discount = 0;
-            $subTotal = Cart::subtotal(2,'.','');
-            $grandTotal = $subTotal+$shipping;
-            
+            $subTotal = Cart::subtotal(2, '.', '');
+            $grandTotal = $subTotal + $shipping;
+
+            // Calculate shipping
+            $shippingInfo = ShippingCharge::where('country_id', $request->country)->first();
+
+            $totalQty = 0;
+            foreach (Cart::content() as $item) {
+                $totalQty += $item->qty;
+            }
+
+            if ($shippingInfo != null) {
+                $shipping = $totalQty*$shippingInfo->amount;
+                $grandTotal = $subTotal+$shipping;
+
+            } else {
+                $shippingInfo = ShippingCharge::where('country_id', 'rest_of_world')->first();
+                $shipping = $totalQty*$shippingInfo->amount;
+                $grandTotal = $subTotal+$shipping;
+            }
+
             $order = new Order;
             $order->subtotal = $subTotal;
             $order->shipping = $shipping;
@@ -245,12 +286,12 @@ class CartController extends Controller
                 $orderItem->name = $item->name;
                 $orderItem->qty = $item->qty;
                 $orderItem->price = $item->price;
-                $orderItem->total = $item->price*$item->qty;
+                $orderItem->total = $item->price * $item->qty;
                 $orderItem->save();
             }
 
-            session()->flash('success','Orderan anda sudah sukses tersimpan');
-            
+            session()->flash('success', 'Orderan anda sudah sukses tersimpan');
+
             Cart::destroy();
 
             return response()->json([
@@ -258,16 +299,61 @@ class CartController extends Controller
                 'orderId' => $order->id,
                 'status' => true,
             ]);
-            
         } else {
-
         }
     }
 
-    public function thankyou($id) {
-        return view('front.thanks',[
+    public function thankyou($id)
+    {
+        return view('front.thanks', [
             'id' => $id
         ]);
     }
-   
+
+    public function getOrderSummery(Request $request)
+    {
+        $subTotal = Cart::subtotal(2, '.', '');
+
+        if ($request->country_id > 0) {
+
+            $shippingInfo = ShippingCharge::where('country_id', $request->country_id)->first();
+
+            $totalQty = 0;
+            foreach (Cart::content() as $item) {
+                $totalQty += $item->qty;
+            }
+
+            if ($shippingInfo != null) {
+
+                $shippingCharge = $totalQty*$shippingInfo->amount;
+                $grandTotal = $subTotal+$shippingCharge;
+
+                return response()->json([
+                    'status' => true,
+                    'grandTotal' => NumberFormat($grandTotal,2),
+                    'shippingCharge' => NumberFormat($shippingCharge,2),
+                ]);
+
+            } else {
+                $shippingInfo = ShippingCharge::where('country_id', 'rest_of_world')->first();
+
+                $shippingCharge = $totalQty*$shippingInfo->amount;
+                $grandTotal = $subTotal+$shippingCharge;
+
+                return response()->json([
+                    'status' => true,
+                    'grandTotal' => NumberFormat($grandTotal,2),
+                    'shippingCharge' => NumberFormat($shippingCharge,2),
+                ]);
+            }
+
+        } else {
+
+            return response()->json([
+                'status' => true,
+                'grandTotal' => NumberFormat($subTotal,2),
+                'shippingCharge' => NumberFormat(0,2),
+            ]);
+        }
+    }
 }

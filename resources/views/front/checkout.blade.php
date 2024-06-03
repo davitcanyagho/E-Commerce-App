@@ -131,11 +131,11 @@
                             </div>
                             <div class="d-flex justify-content-between mt-2">
                                 <div class="h6"><strong>Ongkir</strong></div>
-                                <div class="h6"><strong>0</strong></div>
+                                <div class="h6"><strong id="shippingAmount">Rp.{{ NumberFormat($totalShippingCharge) }}</strong></div>
                             </div>
                             <div class="d-flex justify-content-between mt-2 summery-end">
                                 <div class="h5"><strong>Total</strong></div>
-                                <div class="h5"><strong>Rp.{{ NumberFormat(str_replace(',', '', Cart::subtotal())) }}</strong></div>
+                                <div class="h5"><strong id="grandTotal">Rp.{{ NumberFormat(str_replace(',', '', $grandTotal)) }}</strong></div>
                             </div>
                         </div>
                     </div>
@@ -323,6 +323,21 @@
                 }
 
 
+            }
+        });
+    });
+
+    $("#country").change(function() {
+        $.ajax({
+            url: '{{ route("front.getOrderSummery") }}',
+            type: 'post',
+            data: {country_id: $(this).val()},
+            dataType: 'json',
+            success: function(response) {
+                if (response.status == true) {
+                    $("#shippingAmount").html('Rp.'+response.shippingCharge);
+                    $("#grandTotal").html('Rp.'+response.grandTotal);
+                }
             }
         });
     });
