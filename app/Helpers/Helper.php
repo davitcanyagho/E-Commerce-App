@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Category;
+use App\Models\ProductImage;
 
 function getCategories() {
     return Category::orderBy('name','ASC')
@@ -11,9 +12,6 @@ function getCategories() {
     ->get();
 }
 
-
-
-
 function Numberformat($number)
 {
     return number_format($number, 0,',','.');
@@ -22,6 +20,10 @@ function Numberformat($number)
 function DateFormat($date, $format = "D-MM-Y HH:m:s")
 {
     return \Carbon\Carbon::parse($date)->isoFormat($format);
+}
+
+function getProductImage($productId) {
+    return ProductImage::where('product_id',$productId)->first();
 }
 
 ?>
