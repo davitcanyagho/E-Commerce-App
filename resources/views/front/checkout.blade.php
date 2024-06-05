@@ -5,8 +5,8 @@
     <div class="container">
         <div class="light-font">
             <ol class="breadcrumb primary-color mb-0">
-                <li class="breadcrumb-item"><a class="white-text" href="#">Home</a></li>
-                <li class="breadcrumb-item"><a class="white-text" href="#">Shop</a></li>
+                <li class="breadcrumb-item"><a class="white-text" href="{{ route('front.home') }}">Home</a></li>
+                <li class="breadcrumb-item"><a class="white-text" href="{{ route('front.shop') }}">Shop</a></li>
                 <li class="breadcrumb-item">Checkout</li>
             </ol>
         </div>
@@ -129,6 +129,10 @@
                                 <div class="h6"><strong>Subtotal</strong></div>
                                 <div class="h6"><strong>Rp.{{ NumberFormat(str_replace(',', '', Cart::subtotal())) }}</strong></div>
                             </div>
+                            <div class="d-flex justify-content-between summery-end">
+                                <div class="h6"><strong>Discount</strong></div>
+                                <div class="h6"><strong id="discount_value">Rp.{{ NumberFormat($discount) }}</strong></div>
+                            </div>
                             <div class="d-flex justify-content-between mt-2">
                                 <div class="h6"><strong>Ongkir</strong></div>
                                 <div class="h6"><strong id="shippingAmount">Rp.{{ NumberFormat($totalShippingCharge) }}</strong></div>
@@ -140,6 +144,20 @@
                         </div>
                     </div>
 
+                    <div class="input-group apply-coupan mt-4">
+                        <input type="text" placeholder="Kode Kupon" class="form-control" name="discount_code" id="discount_code">
+                        <button class="btn btn-dark" type="button" id="apply-discount">Tambah Kupon</button>
+                    </div> 
+
+                    <div id="discount-response-wrapper">
+                        @if (Session::has('code'))
+                        <div class="mt-4" id="discount-response">
+                            <strong>{{ Session::get('code')->code }}</strong>
+                            <a class="btn btn-sm btn-danger" id="remove-discount"><i class="fa fa-times"></i></a>
+                        </div>
+                        @endif
+                    </div>
+                    
                     <div class="card payment-form ">
                         <h3 class="card-title h5 mb-3">Metode Pembayaran</h3>
                         <div class="">
@@ -341,5 +359,46 @@
             }
         });
     });
+
+    $("#apply-discount").click(function(){
+        $.ajax({
+            url: '{{ route("front.applyDiscount") }}',
+            type: 'post',
+            data: {code: $("#discount_code").val(), country_id: $("#country").val()},
+            dataType: 'json',
+            success: function(response) {
+              if (response.status == true) {
+                $("#shippingAmount").html('Rp.'+response.shippingCharge);
+                $("#grandTotal").html('Rp.'+response.grandTotal);
+                $("#discount_value").html('Rp.'+response.discount);
+                $("#discount-response-wrapper").html(response.discountString)
+              } else {
+                $("#discount-response-wrapper").html("<span class='text-danger'>"+response.message+"</span>")
+              }
+            }
+        });
+    });
+
+    $('body').on('click',"#remove-discount",function(){
+        $.ajax({
+            url: '{{ route("front.removeCoupon") }}',
+            type: 'post',
+            data: {country_id: $("#country").val()},
+            dataType: 'json',
+            success: function(response) {
+              if (response.status == true) {
+                $("#shippingAmount").html('Rp.'+response.shippingCharge);
+                $("#grandTotal").html('Rp.'+response.grandTotal);
+                $("#discount_value").html('Rp.'+response.discount);
+                $("#discount-response").html('');
+                $("#discount_code").val('');
+              }
+            }
+        });
+    });
+
+    // $("#remove-discount").click(function(){
+        
+    // });
 </script>
 @endsection
