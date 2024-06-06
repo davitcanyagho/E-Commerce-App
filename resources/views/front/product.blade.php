@@ -21,11 +21,11 @@
                     <div class="carousel-inner bg-light">
 
                         @if ($product->product_images)
-                            @foreach ($product->product_images as $key => $productImage)
-                            <div class="carousel-item {{ ($key == 0) ? 'active' : '' }}">
-                                <img class="w-100 h-100" src="{{ asset('uploads/product/large/'.$productImage->image) }}" alt="Image">
-                            </div> 
-                            @endforeach
+                        @foreach ($product->product_images as $key => $productImage)
+                        <div class="carousel-item {{ ($key == 0) ? 'active' : '' }}">
+                            <img class="w-100 h-100" src="{{ asset('uploads/product/large/'.$productImage->image) }}" alt="Image">
+                        </div>
+                        @endforeach
                         @endif
                     </div>
                     <a class="carousel-control-prev" href="#product-carousel" data-bs-slide="prev">
@@ -49,18 +49,34 @@
                         </div>
                         <small class="pt-1">(99 Reviews)</small>
                     </div>
-                    
+
                     @if ($product->compare_price > 0)
-                    <h2 class="price text-secondary"><del>Rp.{{ NumberFormat($product->compare_price) }}</del></h2>   
+                    <h2 class="price text-secondary"><del>Rp.{{ NumberFormat($product->compare_price) }}</del></h2>
                     @endif
-                    
+
                     <h2 class="price ">Rp.{{ NumberFormat($product->price) }}</h2>
 
                     <div class="mb-2">
-                    {!! $product->short_description !!}
+                        {!! $product->short_description !!}
                     </div>
-                    
-                    <a href="javascript:void(0);" onclick="addToCart({{ $product->id }});" class="btn btn-dark"><i class="fas fa-shopping-cart"></i> &nbsp;ADD TO CART</a>
+
+                    <!-- <a href="javascript:void(0);" onclick="addToCart({{ $product->id }});" class="btn btn-dark"><i class="fas fa-shopping-cart"></i> &nbsp;ADD TO CART</a> -->
+
+                    @if($product->track_qty == 'Yes')
+                    @if ($relProduct->qty > 0)
+                    <a class="btn btn-dark" href="javascript:void(0);" onclick="addToCart({{ $product->id }});">
+                        <i class="fa fa-shopping-cart"></i> &nbsp;Add To Cart
+                    </a>
+                    @else
+                    <a class="btn btn-dark" href="javascript:void(0);">
+                        Kehabisan Stok
+                    </a>
+                    @endif
+                    @else
+                    <a class="btn btn-dark" href="javascript:void(0);" onclick="addToCart({{ $product->id }});">
+                        <i class="fa fa-shopping-cart"></i> &nbsp;Add To Cart
+                    </a>
+                    @endif
                 </div>
             </div>
 
@@ -82,7 +98,7 @@
                             {!! $product->description !!}
                         </div>
                         <div class="tab-pane fade" id="shipping" role="tabpanel" aria-labelledby="shipping-tab">
-                        {!! $product->shipping_returns !!}
+                            {!! $product->shipping_returns !!}
                         </div>
                         <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
 
@@ -104,11 +120,11 @@
             <div id="related-products" class="carousel">
                 @foreach ($relatedProducts as $relProduct)
                 @php
-                    $productImage = $relProduct->product_images->first();
+                $productImage = $relProduct->product_images->first();
                 @endphp
                 <div class="card product-card">
                     <div class="product-image position-relative">
-                        
+
                         <a href="{{ route('front.product',$relProduct->slug) }}" class="product-img">
                             @if (!empty($productImage->image))
                             <img class="card-img-top" src="{{ asset('uploads/product/small/'.$productImage->image) }}" />
@@ -116,13 +132,29 @@
                             <img src="{{ asset('admin-assets/img/default-150x150.png') }}" />
                             @endif
                         </a>
-                        
+
                         <a class="whishlist" href="222"><i class="far fa-heart"></i></a>
 
                         <div class="product-action">
-                            <a class="btn btn-dark" href="javascript:void(0);" onclick="addToCart({{ $product->id }});">
+                            <!-- <a class="btn btn-dark" href="javascript:void(0);" onclick="addToCart({{ $product->id }});">
+                                <i class="fa fa-shopping-cart"></i> Add To Cart
+                            </a> -->
+
+                            @if($relProduct->track_qty == 'Yes')
+                            @if ($relProduct->qty > 0)
+                            <a class="btn btn-dark" href="javascript:void(0);" onclick="addToCart({{ $relProduct->id }});">
                                 <i class="fa fa-shopping-cart"></i> Add To Cart
                             </a>
+                            @else
+                            <a class="btn btn-dark" href="javascript:void(0);">
+                                Kehabisan Stok
+                            </a>
+                            @endif
+                            @else
+                            <a class="btn btn-dark" href="javascript:void(0);" onclick="addToCart({{ $relProduct->id }});">
+                                <i class="fa fa-shopping-cart"></i> Add To Cart
+                            </a>
+                            @endif
                         </div>
                     </div>
                     <div class="card-body text-center mt-3">
@@ -130,7 +162,7 @@
                         <div class="price mt-2">
                             <span class="h5"><strong>{{ NumberFormat($relProduct->price) }}</strong></span>
                             @if ($relProduct->compare_price > 0)
-                                <span class="h6 text-underline"><del>{{ NumberFormat($relProduct->compare_price) }}</del></span>
+                            <span class="h6 text-underline"><del>{{ NumberFormat($relProduct->compare_price) }}</del></span>
                             @endif
                         </div>
                     </div>

@@ -33,7 +33,7 @@
                                     </button>
                                 </h2>
                                 @else
-                                <a href="{{ route('front.shop',$category->slug) }}" class="nav-item nav-link {{ ($categorySelected == $category->id) ? 'text-primary' : '' }} ">{{ $category->name }}</a>  
+                                <a href="{{ route('front.shop',$category->slug) }}" class="nav-item nav-link {{ ($categorySelected == $category->id) ? 'text-primary' : '' }} ">{{ $category->name }}</a>
                                 @endif
 
                                 @if ($category->sub_category->isNotEmpty())
@@ -41,7 +41,7 @@
                                     <div class="accordion-body">
                                         <div class="navbar-nav">
                                             @foreach ($category->sub_category as $subCategory)
-                                            <a href="{{ route('front.shop',[$category->slug,$subCategory->slug]) }}" class="nav-item nav-link {{ ($subCategorySelected == $subCategory->id) ? 'text-primary' : '' }} ">{{ $subCategory->name }}</a>  
+                                            <a href="{{ route('front.shop',[$category->slug,$subCategory->slug]) }}" class="nav-item nav-link {{ ($subCategorySelected == $subCategory->id) ? 'text-primary' : '' }} ">{{ $subCategory->name }}</a>
                                             @endforeach
                                         </div>
                                     </div>
@@ -79,7 +79,7 @@
 
                 <div class="card">
                     <div class="card-body">
-                    <input type="text" class="js-range-slider" name="my_range" value="" />
+                        <input type="text" class="js-range-slider" name="my_range" value="" />
                     </div>
                 </div>
             </div>
@@ -107,26 +107,38 @@
                             <div class="product-image position-relative">
 
                                 <a href="{{ route('front.product',$product->slug) }}" class="product-img">
-                                @if (!empty($productImage->image))
+                                    @if (!empty($productImage->image))
                                     <img class="card-img-top" src="{{ asset('uploads/product/small/'.$productImage->image) }}" />
-                                @else
+                                    @else
                                     <img class="card-img-top" src="{{ asset('admin-assets/img/default-150x150.png') }}" />
-                                @endif
+                                    @endif
                                 </a>
-                                
+
                                 <a onclick="addToWishlist({{ $product->id }})" class="whishlist" href="javascript:void(0);"><i class="far fa-heart"></i></a>
 
                                 <div class="product-action">
+                                    @if($product->track_qty == 'Yes')
+                                    @if ($product->qty > 0)
                                     <a class="btn btn-dark" href="javascript:void(0);" onclick="addToCart({{ $product->id }});">
                                         <i class="fa fa-shopping-cart"></i> Add To Cart
                                     </a>
+                                    @else
+                                    <a class="btn btn-dark" href="javascript:void(0);">
+                                        Kehabisan Stok
+                                    </a>
+                                    @endif
+                                    @else
+                                    <a class="btn btn-dark" href="javascript:void(0);" onclick="addToCart({{ $product->id }});">
+                                        <i class="fa fa-shopping-cart"></i> Add To Cart
+                                    </a>
+                                    @endif
                                 </div>
                             </div>
                             <div class="card-body text-center mt-3">
                                 <a class="h6 link" href="product.php">{{ $product->title }}</a>
                                 <div class="price mt-2">
                                     <span class="h5"><strong>Rp.{{ NumberFormat($product->price) }}</strong></span>
-                                    
+
                                     @if ($product->compare_price > 0)
                                     <span class="h6 text-underline"><del>Rp.{{ NumberFormat($product->compare_price) }}</del></span>
                                     @endif
@@ -151,14 +163,21 @@
 
 @section('customJs')
 <script>
-
     rangeSlider = $(".js-range-slider").ionRangeSlider({
         type: "double",
         min: 0,
         max: 25000000,
-        from: {{ ($priceMin) }},
+        from: {
+            {
+                ($priceMin)
+            }
+        },
         step: 100000,
-        to: {{ ($priceMax) }},
+        to: {
+            {
+                ($priceMax)
+            }
+        },
         skin: "round",
         max_postfix: "+",
         prefix: "Rp ",
@@ -191,15 +210,15 @@
 
         // Brand Filter
         if (brands.length > 0) {
-            url += '&brand='+brands.toString()
+            url += '&brand=' + brands.toString()
         }
 
         // Filter Range Harga
-        url += '&price_min='+slider.result.from+'&price_max='+slider.result.to;
+        url += '&price_min=' + slider.result.from + '&price_max=' + slider.result.to;
 
         // Sortings filter
-        
-        url += '&sort='+$("#sort").val();
+
+        url += '&sort=' + $("#sort").val();
 
         window.location.href = url;
     }
