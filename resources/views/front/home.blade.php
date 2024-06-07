@@ -156,7 +156,7 @@
                                     <i class="fa fa-shopping-cart"></i> Add To Cart
                                 </a>
                                 @else 
-                                <a class="btn btn-dark" href="javascript:void(0);" onclick="addToCart({{ $product->id }});">
+                                <a class="btn btn-dark" href="javascript:void(0);">
                                     Stok Habis
                                 </a>
                                 @endif
@@ -219,7 +219,7 @@
                                     <i class="fa fa-shopping-cart"></i> Add To Cart
                                 </a>
                                 @else 
-                                <a class="btn btn-dark" href="javascript:void(0);" onclick="addToCart({{ $product->id }});">
+                                <a class="btn btn-dark" href="javascript:void(0);">
                                     Stok Habis
                                 </a>
                                 @endif
