@@ -64,12 +64,12 @@
 				@else
 				<a href="{{ route('account.login') }}" class="nav-link text-dark">Login/Register</a>
 				@endif
-				<form action="">					
+				<form action="{{ route('front.shop') }}" method="get">					
 					<div class="input-group">
-						<input type="text" placeholder="Cari Produk" class="form-control" aria-label="Amount (to the nearest dollar)">
-						<span class="input-group-text">
+						<input value="{{ Request::get('search') }}" type="text" placeholder="Cari Produk" class="form-control" name="search" id="search">
+						<button type="submit" class="input-group-text">
 							<i class="fa fa-search"></i>
-					  	</span>
+					  	</button>
 					</div>
 				</form>
 			</div>		
@@ -141,11 +141,16 @@
 				<div class="footer-card">
 					<h3>Tautan Penting</h3>
 					<ul>
-						<li><a href="about-us.php" title="About">Tentang Kami</a></li>
+						@if (staticPages()->isNotEmpty())
+							@foreach (staticPages() as $page)
+							<li><a href="{{ route('front.page',$page->slug) }}" title="{{ $page->name }}">{{ $page->name }}</a></li>
+							@endforeach
+						@endif
+						<!-- <li><a href="about-us.php" title="About">Tentang Kami</a></li>
 						<li><a href="contact-us.php" title="Contact Us">Hubungi Kami</a></li>						
 						<li><a href="#" title="Privacy">Privasi</a></li>
 						<li><a href="#" title="Privacy">Syarat & Ketentuan</a></li>
-						<li><a href="#" title="Privacy">Kebijakan Pengembalian Dana</a></li>
+						<li><a href="#" title="Privacy">Kebijakan Pengembalian Dana</a></li> -->
 					</ul>
 				</div>
 			</div>
@@ -167,7 +172,7 @@
 			<div class="row">
 				<div class="col-12 mt-3">
 					<div class="copy-right text-center">
-						<p>© Copyright 2022 Amazing Shop. All Rights Reserved</p>
+						<p>Kelompok 3 Fullstack 7</p>
 					</div>
 				</div>
 			</div>
