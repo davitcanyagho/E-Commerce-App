@@ -27,7 +27,7 @@
         <div class="login-form">
             <form action="{{ route('account.authenticate') }}" method="post">
                 @csrf
-                <h4 class="modal-title">Login to Your Account</h4>
+                <h4 class="modal-title">Login ke Akun Anda</h4>
                 <div class="form-group">
                     <input type="text" class="form-control @error('email') is-invalid @enderror" placeholder="Email" name="email" value="{{ old('email') }}">
                     @error('email')
@@ -45,7 +45,7 @@
                 </div>
                 <input type="submit" class="btn btn-dark btn-block btn-lg" value="Login">
             </form>
-            <div class="text-center small">Belum mempunyai akun? <a href="{{ route('account.register') }}">Sign up</a></div>
+            <div class="text-center small">Belum mempunyai akun? <a href="{{ route('account.register') }}">Register</a></div>
         </div>
     </div>
 </section>

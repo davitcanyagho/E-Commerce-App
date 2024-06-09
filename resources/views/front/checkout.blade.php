@@ -113,7 +113,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="sub-title">
-                        <h2>Order Summery</h3>
+                        <h2>Order Summary</h3>
                     </div>
                     <div class="card cart-summery">
                         <div class="card-body">

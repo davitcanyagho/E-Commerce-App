@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Country;
+use App\Models\CustomerAddress;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\User;
@@ -84,8 +86,104 @@ class AuthController extends Controller
     }
 
     public function profile() {
-        return view('front.account.profile');
+        
+        $userid = Auth::user()->id;
 
+        $countries = Country::orderBy('name','ASC')->get();
+
+        $user = User::where('id',$userid)->first();
+
+        $address = CustomerAddress::where('user_id',$userid)->first();
+
+        return view('front.account.profile',[
+            'user' => $user,
+            'countries' => $countries,
+            'address' => $address
+        ]);
+    }
+
+    public function updateProfile(Request $request) {
+        $userId = Auth::user()->id;
+        $validator = Validator::make($request->all(),[
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,'.$userId.',id',
+            'phone' => 'required'
+        ]);
+
+        if ($validator->passes()) {
+            $user = User::find($userId);
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->phone = $request->phone;
+            $user->save();
+
+            session()->flash('success','Profil berhasil di Update');
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Profil berhasil di Update'
+            ]);
+
+        } else {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()
+            ]);
+        }
+    }
+
+    public function updateAddress(Request $request) {
+        $userId = Auth::user()->id;
+
+        $validator = Validator::make($request->all(), [
+            'first_name' => 'required|min:5',
+            'last_name' => 'required',
+            'email' => 'required|email',
+            'country_id' => 'required',
+            'address' => 'required|min:30',
+            'city' => 'required',
+            'state' => 'required',
+            'zip' => 'required',
+            'mobile' => 'required',
+        ]);
+
+        if ($validator->passes()) {
+            // $user = User::find($userId);
+            // $user->name = $request->name;
+            // $user->email = $request->email;
+            // $user->phone = $request->phone;
+            // $user->save();
+
+            CustomerAddress::updateOrCreate(
+                ['user_id' => $userId],
+                [
+                    'user_id' => $userId,
+                    'first_name' => $request->first_name,
+                    'last_name' => $request->last_name,
+                    'email' => $request->email,
+                    'mobile' => $request->mobile,
+                    'country_id' => $request->country_id,
+                    'address' => $request->address,
+                    'apartment' => $request->apartment,
+                    'city' => $request->city,
+                    'state' => $request->state,
+                    'zip' => $request->zip,
+                ]
+            );
+
+            session()->flash('success','Alamat berhasil di Update');
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Profil berhasil di Update'
+            ]);
+
+        } else {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()
+            ]);
+        }
     }
 
     public function logout() {
@@ -142,6 +240,50 @@ class AuthController extends Controller
             session()->flash('success','Produk berhasil dihapus');
             return response()->json([
                 'status' => true,
+            ]);
+        }
+    }
+
+    public function showChangePasswordForm() {
+        return view('front.account.change-password');
+    }
+
+    public function changePassword(Request $request) {
+        $validator = Validator::make($request->all(),[
+            'old_password' => 'required',
+            'new_password' => 'required|min:5',
+            'confirm_password' => 'required|same:new_password',
+        ]);
+
+        if ($validator->passes()) {
+
+            $user = User::select('id','password')->where('id',Auth::user()->id)->first();
+
+            if (!Hash::check($request->old_password,$user->password)) {
+                
+                session()->flash('error','Password lama anda salah, silahkan coba lagi');
+                
+                return response()->json([
+                    'status' => true,
+                ]);  
+            }
+
+            User::where('id',$user->id)->update([
+                'password' => Hash::make($request->new_password)
+            ]);
+
+            session()->flash('success','Anda sudah berhasil mengganti password anda');
+                
+            return response()->json([
+                'status' => true,
+            ]);
+
+            // dd($user);
+
+        } else {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()
             ]);
         }
     }
