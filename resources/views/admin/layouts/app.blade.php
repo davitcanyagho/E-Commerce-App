@@ -82,7 +82,7 @@
 		<!-- /.content-wrapper -->
 		<footer class="main-footer">
 
-			<strong>Copyright &copy; 2014-2022 AmazingShop All rights reserved.
+			<strong>Kelompok 3 Fullstack 7
 		</footer>
 
 	</div>
