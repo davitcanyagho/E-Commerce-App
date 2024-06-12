@@ -49,12 +49,12 @@
 </head>
 <body data-instant-intensity="mousedown">
 
-<div class="bg-light top-header">        
+<div class="bg-custom top-header">        
 	<div class="container">
 		<div class="row align-items-center py-3 d-none d-lg-flex justify-content-between">
 			<div class="col-lg-4 logo">
 				<a href="{{ route("front.home") }}" class="text-decoration-none">
-					<span class="h1 text-uppercase text-primary bg-dark px-2">Retail</span>
+					<span class="h1 text-uppercase text-primary bg-custom px-2">Retail</span>
 					<span class="h1 text-uppercase text-dark bg-primary px-2 ml-n1">X</span>
 				</a>
 			</div>
@@ -77,7 +77,7 @@
 	</div>
 </div>
 
-<header class="bg-dark">
+<header class="bg-custom">
 	<div class="container">
 		<nav class="navbar navbar-expand-xl" id="navbar">
 			<a href="index.php" class="text-decoration-none mobile-logo">
@@ -96,7 +96,7 @@
                     @if(getCategories()->isNotEmpty())
                     @foreach (getCategories() as $category)
                     <li class="nav-item dropdown">
-						<button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+						<button class="btn btn-green dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
 							{{ $category->name }}
 						</button>
                         @if ($category->sub_category->isNotEmpty())
@@ -124,7 +124,7 @@
     @yield('content')
 </main>
 
-<footer class="bg-dark mt-5">
+<footer class="bg-custom2 mt-5">
 	<div class="container pb-5 pt-3">
 		<div class="row">
 			<div class="col-md-4">
@@ -159,9 +159,9 @@
 				<div class="footer-card">
 					<h3>Akun Saya</h3>
 					<ul>
-						<li><a href="#" title="Sell">Masuk</a></li>
-						<li><a href="#" title="Advertise">Daftar</a></li>
-						<li><a href="#" title="Contact Us">Orderan Saya</a></li>						
+						<li><a href="{{ route('account.login') }}" title="Sell">Masuk</a></li>
+						<li><a href="{{ route('account.register') }}" title="Advertise">Daftar</a></li>
+						<li><a href="{{ route('account.orders') }}" title="Contact Us">Orderan Saya</a></li>						
 					</ul>
 				</div>
 			</div>			
