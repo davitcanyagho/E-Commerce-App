@@ -44,6 +44,7 @@
                     <a href="{{ route('front.forgotPassword') }}" class="forgot-link">Lupa Password?</a>
                 </div>
                 <input type="submit" class="btn btn-dark btn-block btn-lg" value="Login">
+                <a href="{{ route('redirect') }}" class="btn btn-danger btn-block btn-lg">Google</a>
             </form>
             <div class="text-center small">Belum mempunyai akun? <a href="{{ route('account.register') }}">Register</a></div>
         </div>
