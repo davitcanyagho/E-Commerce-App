@@ -21,6 +21,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\ShopContrroller;
+use App\Http\Controllers\SocialiteController;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
@@ -65,6 +66,15 @@ Route::post('/process-forgot-password',[AuthController::class,'processForgotPass
 Route::get('/reset-password/{token}',[AuthController::class,'resetPassword'])->name('front.resetPassword');
 Route::post('/process-reset-password',[AuthController::class,'processResetPassword'])->name('front.processResetPassword');
 Route::post('/save-rating/{productId}',[ShopContrroller::class,'saveRating'])->name('front.saveRating');
+
+Route::get('login/google/redirect', [SocialiteController::class, 'redirect'])
+    ->middleware(['guest'])
+    ->name('redirect');
+
+// Untuk callback dari Google
+Route::get('login/google/callback', [SocialiteController::class, 'callback'])
+    ->middleware(['guest'])
+    ->name('callback');
 
 
 Route::group(['prefix' => 'account'], function() {
