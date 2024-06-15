@@ -14,7 +14,7 @@
 
                 <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                     <div class="p-3">
-                        <h1 class="display-4 text-white mb-3">Pakaian Anak Kecil</h1>
+                        
                         <p class="mx-md-5 px-5">Dengan berbagai pilihan pakaian anak yang nyaman dan penuh gaya, si kecil akan selalu tampil ceria dan percaya diri dalam berbagai kesempatan.</p>
                         <a class="btn btn-outline-light py-2 px-4 mt-3" href="{{ route('front.shop') }}">Belanja Sekarang</a>
                     </div>
@@ -32,7 +32,7 @@
                     <div class="p-3">
                         <h1 class="display-4 text-white mb-3">Pakaian Wanita</h1>
                         <p class="mx-md-5 px-5">Pakaian wanita hadir dalam berbagai gaya dan desain untuk memenuhi kebutuhan dan selera yang beragam.</p>
-                        <a class="btn btn-outline-light py-2 px-4 mt-3" href="#">Belanja Sekarang</a>
+                        <a class="btn btn-outline-light py-2 px-4 mt-3" href="{{ route('front.shop') }}">Belanja Sekarang</a>
                     </div>
                 </div>
             </div>
@@ -48,7 +48,7 @@
                     <div class="p-3">
                         <h1 class="display-4 text-white mb-3">Casual</h1>
                         <p class="mx-md-5 px-5">Pakaian kasual wanita dirancang untuk kenyamanan sekaligus gaya dalam berbagai aktivitas sehari-hari.</p>
-                        <a class="btn btn-outline-light py-2 px-4 mt-3" href="#">Belanja Sekarang</a>
+                        <a class="btn btn-outline-light py-2 px-4 mt-3" href="{{ route('front.shop') }}">Belanja Sekarang</a>
                     </div>
                 </div>
             </div>
@@ -169,7 +169,7 @@
                         </div>
                     </div>
                     <div class="card-body text-center mt-3">
-                        <a class="h6 link" href="product.php">{{ $product->title }}</a>
+                        <a class="h6 link" href="{{ route('front.product',$product->slug) }}">{{ $product->title }}</a>
                         <div class="price mt-2">
 
                             <span class="h5"><strong>{{ NumberFormat($product->price) }}</strong></span>
@@ -232,7 +232,7 @@
                         </div>
                     </div>
                     <div class="card-body text-center mt-3">
-                        <a class="h6 link" href="product.php">{{ $product->title }}</a>
+                        <a class="h6 link" href="{{ route('front.product',$product->slug) }}">{{ $product->title }}</a>
                         <div class="price mt-2">
 
                             <span class="h5"><strong>{{ NumberFormat($product->price) }}</strong></span>
