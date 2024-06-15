@@ -48,7 +48,7 @@
 	</script>
 
 	<!-- Fav Icon -->
-	<link rel="shortcut icon" type="image/x-icon" href="#" />
+	<link rel="shortcut icon" type="image/x-icon" href="{{ asset('front-assets/images/shopping.png') }}" />
 
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
