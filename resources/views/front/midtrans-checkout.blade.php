@@ -188,7 +188,7 @@
                         </div>
                         <div class="pt-4">
                             <!-- <a href="#" class="btn-dark btn btn-block w-100">Bayar Sekarang</a> -->
-                            <button class="btn-dark btn btn-block w-100" type="submit">COD Sekarang</button>
+                            <button class="btn-dark btn btn-block w-100" type="submit">Simpan Data</button>
                         </div>
                     </div>
 
@@ -220,7 +220,7 @@
         $('button[type="submit"]').prop('disabled',true);
         $('button[type="submit"]').html('Loading...');
         $.ajax({
-            url: '{{ route("front.processCheckout") }}',
+            url: '{{ route("front.processMidtransCheckout") }}',
             type: 'post',
             data: $(this).serializeArray(),
             dataType: 'json',
@@ -336,7 +336,8 @@
                             .html('');
                     }
                 } else {
-                    window.location.href="{{ url('thanks/') }}/"+response.orderId;
+                    // console.log(response.snapToken);
+                    window.location.href="{{ url('midtrans-confirmation/') }}/"+response.orderId+ "?snapToken="+response.snapToken;
                 }
 
 

@@ -101,8 +101,11 @@
                             <div>Rp.{{ Cart::subtotal() }}</div>
                         </div>
                         <div class="pt-2">
-                            <a href="{{ route('front.checkout') }}" class="btn-dark btn btn-block w-100">Proses ke checkout</a>
+                            <a href="{{ route('front.checkout') }}" class="btn-dark btn btn-block w-100">Pilih COD</a>
                         </div>
+                        <div class="pt-2">
+                            <a href="{{ route('front.midtrans.checkout') }}" class="btn-success btn btn-block w-100">Pilih Bayar Sekarang</a>
+                        </div>                        
                     </div>
                 </div>
                 <!-- <div class="input-group apply-coupan mt-4">

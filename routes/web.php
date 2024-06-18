@@ -44,28 +44,36 @@ use Illuminate\Http\Request;
 //     orderEmail(22);
 // });
 
-Route::get('/',[FrontController::class,'index'])->name('front.home');
-Route::get('/shop/{categorySlug?}/{subCategorySlug?}',[ShopContrroller::class,'index'])->name('front.shop');
-Route::get('/product/{slug}',[ShopContrroller::class, 'product'])->name('front.product');
-Route::get('/cart',[CartController::class,'cart'])->name('front.cart');
-Route::post('/add-to-cart',[CartController::class,'addToCart'])->name('front.addToCart');
-Route::post('/update-cart',[CartController::class,'updateCart'])->name('front.updateCart');
-Route::post('/delete-item',[CartController::class,'deleteItem'])->name('front.deleteItem.cart');
-Route::get('/checkout',[CartController::class,'checkout'])->name('front.checkout');
-Route::post('/process-checkout',[CartController::class,'processCheckout'])->name('front.processCheckout');
-Route::get('/thanks/{orderId}',[CartController::class,'thankyou'])->name('front.thankyou');
-Route::post('/get-order-summery',[CartController::class,'getOrderSummery'])->name('front.getOrderSummery');
-Route::post('/apply-discount',[CartController::class,'applyDiscount'])->name('front.applyDiscount');
-Route::post('/remove-discount',[CartController::class,'removeCoupon'])->name('front.removeCoupon');
-Route::post('/add-to-wishlist',[FrontController::class,'addToWishlist'])->name('front.addToWishlist');
-Route::get('/page/{slug}',[FrontController::class,'page'])->name('front.page');
-Route::post('/send-contact-email',[FrontController::class,'sendContactEmail'])->name('front.sendContactEmail');
+Route::get('/', [FrontController::class,'index'])->name('front.home');
+Route::get('/shop/{categorySlug?}/{subCategorySlug?}', [ShopContrroller::class,'index'])->name('front.shop');
+Route::get('/product/{slug}', [ShopContrroller::class, 'product'])->name('front.product');
+Route::get('/cart', [CartController::class,'cart'])->name('front.cart');
+Route::post('/add-to-cart', [CartController::class,'addToCart'])->name('front.addToCart');
+Route::post('/update-cart', [CartController::class,'updateCart'])->name('front.updateCart');
+Route::post('/delete-item', [CartController::class,'deleteItem'])->name('front.deleteItem.cart');
+Route::get('/checkout', [CartController::class,'checkout'])->name('front.checkout');
+Route::get('/midtrans-checkout', [CartController::class,'midtransCheckout'])->name('front.midtrans.checkout');
 
-Route::get('/forgot-password',[AuthController::class,'forgotPassword'])->name('front.forgotPassword');
-Route::post('/process-forgot-password',[AuthController::class,'processForgotPassword'])->name('front.processForgotPassword');
-Route::get('/reset-password/{token}',[AuthController::class,'resetPassword'])->name('front.resetPassword');
-Route::post('/process-reset-password',[AuthController::class,'processResetPassword'])->name('front.processResetPassword');
-Route::post('/save-rating/{productId}',[ShopContrroller::class,'saveRating'])->name('front.saveRating');
+Route::post('/process-checkout', [CartController::class,'processCheckout'])->name('front.processCheckout');
+
+Route::post('/process-midtrans-checkout', [CartController::class,'processMidtransCheckout'])->name('front.processMidtransCheckout');
+
+Route::get('/thanks/{orderId}', [CartController::class,'thankyou'])->name('front.thankyou');
+
+Route::get('/midtrans-confirmation/{orderId}', [CartController::class,'midtransConfirmation'])->name('front.midtransConfirmation');
+
+Route::post('/get-order-summery', [CartController::class,'getOrderSummery'])->name('front.getOrderSummery');
+Route::post('/apply-discount', [CartController::class,'applyDiscount'])->name('front.applyDiscount');
+Route::post('/remove-discount', [CartController::class,'removeCoupon'])->name('front.removeCoupon');
+Route::post('/add-to-wishlist', [FrontController::class,'addToWishlist'])->name('front.addToWishlist');
+Route::get('/page/{slug}', [FrontController::class,'page'])->name('front.page');
+Route::post('/send-contact-email', [FrontController::class,'sendContactEmail'])->name('front.sendContactEmail');
+
+Route::get('/forgot-password', [AuthController::class,'forgotPassword'])->name('front.forgotPassword');
+Route::post('/process-forgot-password', [AuthController::class,'processForgotPassword'])->name('front.processForgotPassword');
+Route::get('/reset-password/{token}', [AuthController::class,'resetPassword'])->name('front.resetPassword');
+Route::post('/process-reset-password', [AuthController::class,'processResetPassword'])->name('front.processResetPassword');
+Route::post('/save-rating/{productId}', [ShopContrroller::class,'saveRating'])->name('front.saveRating');
 
 Route::get('login/google/redirect', [SocialiteController::class, 'redirect'])
     ->middleware(['guest'])
@@ -77,44 +85,44 @@ Route::get('login/google/callback', [SocialiteController::class, 'callback'])
     ->name('callback');
 
 
-Route::group(['prefix' => 'account'], function() {
-    Route::group(['middleware' => 'guest'], function() {
-        Route::get('/login',[AuthController::class, 'login'])->name('account.login');
-        Route::post('/login',[AuthController::class, 'authenticate'])->name('account.authenticate');
-        
-        Route::get('/register',[AuthController::class, 'register'])->name('account.register');
-        Route::post('/process-register',[AuthController::class, 'processRegister'])->name('account.processRegister');
+Route::group(['prefix' => 'account'], function () {
+    Route::group(['middleware' => 'guest'], function () {
+        Route::get('/login', [AuthController::class, 'login'])->name('account.login');
+        Route::post('/login', [AuthController::class, 'authenticate'])->name('account.authenticate');
+
+        Route::get('/register', [AuthController::class, 'register'])->name('account.register');
+        Route::post('/process-register', [AuthController::class, 'processRegister'])->name('account.processRegister');
     });
 
-    Route::group(['middleware' => 'auth'], function() {
-        Route::get('/profile',[AuthController::class, 'profile'])->name('account.profile');
-        Route::post('/update-profile',[AuthController::class, 'updateProfile'])->name('account.updateProfile');
-        Route::post('/update-address',[AuthController::class, 'updateAddress'])->name('account.updateAddress');
-        Route::get('/change-password',[AuthController::class, 'showChangePasswordForm'])->name('account.changePassword');
-        Route::post('/process-change-password',[AuthController::class, 'changePassword'])->name('account.processChangePassword');
+    Route::group(['middleware' => 'auth'], function () {
+        Route::get('/profile', [AuthController::class, 'profile'])->name('account.profile');
+        Route::post('/update-profile', [AuthController::class, 'updateProfile'])->name('account.updateProfile');
+        Route::post('/update-address', [AuthController::class, 'updateAddress'])->name('account.updateAddress');
+        Route::get('/change-password', [AuthController::class, 'showChangePasswordForm'])->name('account.changePassword');
+        Route::post('/process-change-password', [AuthController::class, 'changePassword'])->name('account.processChangePassword');
 
-        Route::get('/my-orders',[AuthController::class, 'orders'])->name('account.orders');
-        Route::get('/my-wishlist',[AuthController::class, 'wishlist'])->name('account.wishlist');
-        Route::post('/remove-product-from-wishlist',[AuthController::class, 'removeProductFromWishList'])->name('account.removeProductFromWishList');
-        Route::get('/order-detail/{orderId}',[AuthController::class, 'orderDetail'])->name('account.orderDetail');
-        Route::get('/logout',[AuthController::class, 'logout'])->name('account.logout');
+        Route::get('/my-orders', [AuthController::class, 'orders'])->name('account.orders');
+        Route::get('/my-wishlist', [AuthController::class, 'wishlist'])->name('account.wishlist');
+        Route::post('/remove-product-from-wishlist', [AuthController::class, 'removeProductFromWishList'])->name('account.removeProductFromWishList');
+        Route::get('/order-detail/{orderId}', [AuthController::class, 'orderDetail'])->name('account.orderDetail');
+        Route::get('/logout', [AuthController::class, 'logout'])->name('account.logout');
     });
 });
 
-Route::group(['prefix' => 'admin'], function() {
+Route::group(['prefix' => 'admin'], function () {
 
-    Route::group(['middleware' => 'admin.guest'], function() {
-        
+    Route::group(['middleware' => 'admin.guest'], function () {
+
         Route::get('/login', [AdminLoginController::class, 'index'])->name('admin.login');
         Route::post('/authenticate', [AdminLoginController::class, 'authenticate'])->name('admin.authenticate');
 
     });
 
-    Route::group(['middleware' => 'admin.auth'], function() {
-        
+    Route::group(['middleware' => 'admin.auth'], function () {
+
         Route::get('/dashboard', [HomeController::class, 'index'])->name('admin.dashboard');
         Route::get('/logout', [HomeController::class, 'logout'])->name('admin.logout');
-        
+
         // Category Routes
         Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
         Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
@@ -122,7 +130,7 @@ Route::group(['prefix' => 'admin'], function() {
         Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
         Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
         Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.delete');
-        
+
         // Sub Category Routes
         Route::get('/sub-categories', [SubCategoryController::class, 'index'])->name('sub-categories.index');
         Route::get('/sub-categories/create', [SubCategoryController::class, 'create'])->name('sub-categories.create');
@@ -130,8 +138,8 @@ Route::group(['prefix' => 'admin'], function() {
         Route::get('/sub-categories/{subCategory}/edit', [SubCategoryController::class, 'edit'])->name('sub-categories.edit');
         Route::put('/sub-categories/{subCategory}', [SubCategoryController::class, 'update'])->name('sub-categories.update');
         Route::delete('/sub-categories/{subCategory}', [SubCategoryController::class, 'destroy'])->name('sub-categories.delete');
-        
-        
+
+
         // Brands Routes
         Route::get('/brands', [BrandController::class, 'index'])->name('brands.index');
         Route::get('/brands/create', [BrandController::class, 'create'])->name('brands.create');
@@ -148,7 +156,7 @@ Route::group(['prefix' => 'admin'], function() {
         Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
         Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
         Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.delete');
-        Route::get('/get-products',[ProductController::class,'getProducts'])->name('products.getProducts');
+        Route::get('/get-products', [ProductController::class,'getProducts'])->name('products.getProducts');
         Route::get('/ratings', [ProductController::class, 'productRatings'])->name('products.productRatings');
         Route::get('/change-rating-status', [ProductController::class, 'changeRatingStatus'])->name('products.changeRatingStatus');
 
@@ -173,7 +181,7 @@ Route::group(['prefix' => 'admin'], function() {
         Route::get('/coupons/{coupon}/edit', [DiscountCodeController::class, 'edit'])->name('coupons.edit');
         Route::put('/coupons/{coupon}', [DiscountCodeController::class, 'update'])->name('coupons.update');
         Route::delete('/coupons/{coupon}', [DiscountCodeController::class, 'destroy'])->name('coupons.delete');
-        
+
         // Order Routes
         Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('/orders/{id}', [OrderController::class, 'detail'])->name('orders.detail');
@@ -196,19 +204,19 @@ Route::group(['prefix' => 'admin'], function() {
         Route::get('/pages/{page}/edit', [PageController::class, 'edit'])->name('pages.edit');
         Route::put('/pages/{page}', [PageController::class, 'update'])->name('pages.update');
         Route::delete('/pages/{page}', [PageController::class, 'destroy'])->name('pages.delete');
-        
-        
+
+
         // temp-images.create
         Route::post('/upload-temp-image', [TempImagesController::class, 'create'])->name('temp-images.create');
-        
-        
+
+
         //  Settings routes
         Route::get('/change-password', [SettingController::class, 'showChangePasswordForm'])->name('admin.showChangePasswordForm');
         Route::post('/process-change-password', [SettingController::class, 'processChangePassword'])->name('admin.processChangePassword');
 
 
 
-        Route::get('/getSlug',function(Request $request) {
+        Route::get('/getSlug', function (Request $request) {
             $slug = '';
             if(!empty($request->title)) {
                 $slug = Str::slug($request->title);
