@@ -51,13 +51,20 @@
                                 <b>Total:</b> Rp.{{ NumberFormat($order->grand_total) }}<br>
                                 <b>Status:</b>
                                 @if ($order->status == 'pending')
-                                <span class="text-danger">Pending</span>
+                                <span class="badge bg-danger">Pending</span>
                                 @elseif ($order->status == 'shipped')
-                                <span class="text-info">Shipped</span>
+                                <span class="badge bg-info">Shipped</span>
                                 @elseif ($order->status == 'delivered')
-                                <span class="text-success">Delivered</span>
+                                <span class="badge bg-success">Delivered</span>
                                 @else
-                                <span class="text-danger">Cancelled</span>
+                                <span class="badge bg-danger">Cancelled</span>
+                                @endif
+                                <br>
+                                <b>Payment Status:</b>
+                                @if ($order->payment_status == 'paid')
+                                <span class="badge bg-success">Paid</span>
+                                @else
+                                <span class="badge bg-warning">Not Paid</span>
                                 @endif
                                 <br>
                             </div>
@@ -166,7 +173,7 @@
     $("#changeOrderStatusForm").submit(function(event) {
         event.preventDefault();
 
-        if(confirm("Apakah anda yakin untuk mengubah status?")) {
+        if (confirm("Apakah anda yakin untuk mengubah status?")) {
 
             $.ajax({
                 url: '{{ route("orders.changeOrderStatus",$order->id) }}',
@@ -183,7 +190,7 @@
     $("#sendInvoiceEmail").submit(function(event) {
         event.preventDefault();
 
-        if(confirm("Apakah anda yakin untuk mengirim ke email?")) {
+        if (confirm("Apakah anda yakin untuk mengirim ke email?")) {
             $.ajax({
                 url: '{{ route("orders.sendInvoiceEmail",$order->id) }}',
                 type: 'post',
@@ -195,6 +202,5 @@
             });
         }
     });
-
 </script>
 @endsection

@@ -46,6 +46,7 @@
                                     <th>Email</th>
                                     <th>No HP</th>
                                     <th>Status</th>
+                                    <th>Payment Status</th>
                                     <th>Jumlah</th>
                                     <th>Tanggal Pembelian</th>
                                 </tr>
@@ -67,6 +68,13 @@
                                         <span class="badge bg-success">Delivered</span>
                                         @else
                                         <span class="badge bg-danger">Cancelled</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($order->payment_status == 'paid')
+                                        <span class="badge bg-success">Paid</span>
+                                        @else
+                                        <span class="badge bg-warning">Not Paid</span>
                                         @endif
                                     </td>
                                     <td>Rp.{{ NumberFormat($order->grand_total) }}</td>
