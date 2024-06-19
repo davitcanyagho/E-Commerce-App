@@ -171,6 +171,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
 
     ])->toArray(),
 
@@ -190,6 +191,7 @@ return [
         'Image' => Intervention\Image\Facades\Image::class,
         'Carbon' => Illuminate\Support\Carbon::class,
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+        'PDF' => Barryvdh\DomPDF\Facade\Pdf::class,
 
     ])->toArray(),
 
