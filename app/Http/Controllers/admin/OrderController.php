@@ -12,7 +12,7 @@ class OrderController extends Controller
 {
     public function index(Request $request) {
 
-        $orders = Order::latest('orders.created_at')->select('orders.*','users.name','users.email');
+        $orders = Order::latest('orders.created_at')->select('orders.*','users.name','users.email','orders.payment_status');
         $orders = $orders->leftJoin('users','users.id','orders.user_id');
 
         if ($request->get('keyword') != "") {
@@ -31,7 +31,7 @@ class OrderController extends Controller
     public function detail($orderId) {
 
 
-        $order = Order::select('orders.*','countries.name as countryName')
+        $order = Order::select('orders.*','countries.name as countryName','orders.payment_status')
                     ->where('orders.id',$orderId)
                     ->leftJoin('countries','countries.id','orders.country_id')
                     ->first();
