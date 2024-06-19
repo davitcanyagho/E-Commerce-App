@@ -123,6 +123,9 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/dashboard', [HomeController::class, 'index'])->name('admin.dashboard');
         Route::get('/logout', [HomeController::class, 'logout'])->name('admin.logout');
 
+        // Rute untuk mengunduh laporan PDF
+        Route::get('/laporan/pdf', [HomeController::class, 'generatePDF'])->name('admin.laporan.pdf');
+
         // Category Routes
         Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
         Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
