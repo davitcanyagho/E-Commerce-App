@@ -128,7 +128,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="">Shipped Date</label>
-                                <input autocomplete="off" placeholder="Shipped Date" value="{{ $order->shipped_date }}" type="text" name="shipped_date" id="shipped_date" class="form-control">
+                                <input autocomplete="off" placeholder="Shipped Date" value="{{ $order->shipped_date }}" type="date" name="shipped_date" id="shipped_date" class="form-control">
                                 </select>
                             </div>
                             <div class="mb-3">
