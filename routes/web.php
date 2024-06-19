@@ -24,6 +24,7 @@ use App\Http\Controllers\ShopContrroller;
 use App\Http\Controllers\SocialiteController;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 /*
 |--------------------------------------------------------------------------
@@ -92,6 +93,19 @@ Route::group(['prefix' => 'account'], function () {
 
         Route::get('/register', [AuthController::class, 'register'])->name('account.register');
         Route::post('/process-register', [AuthController::class, 'processRegister'])->name('account.processRegister');
+
+         //Verfisikasi Email
+         Route::get('/email/verify', [AuthController::class, 'showVerificationNotice'])
+         ->middleware('auth')
+         ->name('verification.notice');
+
+        Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
+            ->middleware(['auth', 'signed'])
+            ->name('verification.verify');
+
+        Route::post('/email/verification-notification', [AuthController::class, 'resendVerificationEmail'])
+            ->middleware(['auth', 'throttle:6,1'])
+            ->name('verification.send');
     });
 
     Route::group(['middleware' => 'auth'], function () {

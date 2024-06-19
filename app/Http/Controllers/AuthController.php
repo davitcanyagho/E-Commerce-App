@@ -9,6 +9,8 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\User;
 use App\Models\Wishlist;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -44,7 +46,10 @@ class AuthController extends Controller
             $user->password = Hash::make($request->password);
             $user->save();
 
-            session()->flash('success','Anda telah berhasil terdaftar.');
+            // Kirim email verifikasi
+        event(new Registered($user));
+
+        session()->flash('success','Anda telah berhasil terdaftar. Silakan verifikasi email Anda.');
 
             return response()->json([
                 'status' => true,
@@ -56,6 +61,20 @@ class AuthController extends Controller
             ]);
         }
 
+    }
+
+    public function showVerificationNotice($id, $hash) {
+        dd($id);
+        return view('email.verify-email');
+    }
+
+    public function verifyEmail(EmailVerificationRequest $request) {
+        $request->fulfill();
+        return redirect()->route('account.profile')->with('success', 'Email Anda berhasil diverifikasi.');
+    }
+    public function resendVerificationEmail(Request $request) {
+        $request->user()->sendEmailVerificationNotification();
+        return back()->with('message', 'Link verifikasi telah dikirim ulang ke email Anda.');
     }
 
     public function authenticate(Request $request) {
