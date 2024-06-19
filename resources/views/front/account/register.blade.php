@@ -12,7 +12,7 @@
     </div>
 </section>
 
-<section class=" section-10">
+<section class="section-10">
     <div class="container">
         <div class="login-form">
             <form action="" method="post" name="registrationForm" id="registrationForm">
@@ -49,15 +49,12 @@
 @endsection
 
 @section('customJs')
-
-
 <script type="text/javascript">
-
 $("#registrationForm").submit(function(event){
     event.preventDefault();
 
     $("button[type='submit']").prop('disabled',true);
-
+    $('button[type="submit"]').html('Loading...');
     $.ajax({
         url: '{{ route("account.processRegister") }}',
         type: 'post',
@@ -65,7 +62,7 @@ $("#registrationForm").submit(function(event){
         dataType: 'json',
         success: function(response){
             $("button[type='submit']").prop('disabled',false);
-
+            $('button[type="submit"]').html('Daftar');
             var errors = response.errors; 
 
             if (response.status == false) {
@@ -103,7 +100,10 @@ $("#registrationForm").submit(function(event){
                 $("#password").siblings("p").removeClass('invalid-feedback').html('');
                 $("#password").removeClass('is-invalid');
 
-                window.location.href="{{ route('account.login') }}";
+                alert("Registrasi berhasil. Silakan cek email Anda untuk verifikasi.");
+                
+                window.location.href="{{ route('account.login') }}?verification=true";
+ 
 
             }
 
@@ -113,8 +113,5 @@ $("#registrationForm").submit(function(event){
         }
     });
 });
-
 </script>
-
-
 @endsection
